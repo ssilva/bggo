@@ -110,4 +110,4 @@ To be covered (in order of priority):
 
 ## Contributing
 
-Please [file an issue](https://github.com/ssilva/hugo-theme-bggo/issues) for bugs and feature suggestions.
+Please [file an issue](https://github.com/ssilva/bggo/issues) for bugs and feature suggestions.
