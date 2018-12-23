@@ -5,6 +5,7 @@ bggo is
 - a Go package for unmarshalling [BGG XML API2](https://boardgamegeek.com/wiki/page/BGG_XML_API2) responses
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/ssilva/bggo)](https://goreportcard.com/report/github.com/ssilva/bggo)
+[![Build Status](https://travis-ci.org/ssilva/bggo.svg?branch=master)](https://travis-ci.org/ssilva/bggo)
 
 ## The command line tool
 
