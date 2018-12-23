@@ -19,7 +19,7 @@ $ go build ./cmd/bggo
 
 ### Examples
 
-For the moment, the following use cases are availabe.
+For the moment, the following use cases are available.
 
 1. Get the rating of a board game:
     ```
