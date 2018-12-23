@@ -4,6 +4,8 @@ bggo is
 - a command line tool for retrieving stats from BoardGameGeek.com
 - a Go package for unmarshalling [BGG XML API2](https://boardgamegeek.com/wiki/page/BGG_XML_API2) responses
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/ssilva/bggo)](https://goreportcard.com/report/github.com/ssilva/bggo)
+
 ## The command line tool
 
 ### Installation
@@ -16,7 +18,7 @@ $ go build ./cmd/bggo
 
 ### Examples
 
-For now, the following use cases are covered.
+For the moment, the following use cases are availabe.
 
 1. Get the rating of a board game:
     ```
@@ -91,13 +93,13 @@ For more examples, see the `*_test.go` files.
 
 ### API coverage
 
-Covered:
+Implemented:
 
 - Thing Items (`/thing`)
 - Plays (`/plays`)
 - Search (`/search`)
 
-To be covered (in order of priority):
+To be implemented (in order of priority):
 
 1. Hot Items (`/hot`)
 1. Users (`/user`)
