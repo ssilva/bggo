@@ -17,6 +17,7 @@ const (
 	bggurlplays  string = "https://www.boardgamegeek.com/xmlapi2/plays?username="
 	bggurlsearch string = "https://www.boardgamegeek.com/xmlapi2/search?type=boardgame&query="
 	bggurlthing  string = "https://www.boardgamegeek.com/xmlapi2/thing?stats=1&id="
+	bggurlhot    string = "https://www.boardgamegeek.com/xmlapi2/hot?type=boardgame"
 )
 
 func printHelp() {
@@ -25,6 +26,8 @@ func printHelp() {
 	fmt.Println(" bggo GAMENAME")
 	fmt.Println("To get play statistcs on a user:")
 	fmt.Println(" bggo -plays USERNAME")
+	fmt.Println("To get the list of most active games:")
+	fmt.Println(" bggo -hot")
 }
 
 func httpGetAndReadAll(url string) (xmldata []byte) {
@@ -115,19 +118,35 @@ func retrieveAndPrintGameRating(gameName string, exactSearch bool) {
 	}
 }
 
+func retrieveAndPrintHotGames() {
+	xmldata := httpGetAndReadAll(bggurlhot)
+	resp := &bggo.HotResponse{}
+	unmarshalOrDie(xmldata, resp)
+
+	for _, item := range resp.Items {
+		fmt.Printf("[%2d] %s (%s)\n", item.Rank, item.Name.Value, item.YearPublished.Value)
+	}
+
+	return
+}
+
 func main() {
 	help := flag.Bool("help", false, "print usage")
 	plays := flag.String("plays", "", "get plays for USER")
+	hot := flag.Bool("hot", false, "get the list of most active games")
 	exactSearch := flag.Bool("exact", false, "exact search")
 	flag.Parse()
 	gameName := flag.Arg(0)
 
-	if *help == true {
+	if *help {
 		printHelp()
 
 	} else if *plays != "" {
 		response := retrievePlays(*plays)
 		printPlays(response)
+
+	} else if *hot {
+		retrieveAndPrintHotGames()
 
 	} else if gameName != "" {
 		if len(gameName) < 3 {

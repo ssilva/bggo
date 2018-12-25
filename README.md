@@ -50,6 +50,22 @@ For the moment, the following use cases are available.
             ⋮
     ```
 
+1. Get the list of most active games:
+    ```
+    $ bggo -hot
+    [ 1] Tainted Grail: Fall of Avalon (2019)
+    [ 2] New Frontiers (2018)
+    [ 3] Mage Knight: Ultimate Edition (2018)
+    [ 4] Gloomhaven (2017)
+    [ 5] Beta Colony (2018)
+    [ 6] Nemesis (2018)
+    [ 7] Terraforming Mars (2016)
+    [ 8] KeyForge: Call of the Archons (2018)
+    [ 9] Azul (2017)
+    [10] Architects of the West Kingdom (2018)
+    ⋮
+    ```
+
 ## The Go package
 
 ### Installation
@@ -99,10 +115,10 @@ Implemented:
 - Thing Items (`/thing`)
 - Plays (`/plays`)
 - Search (`/search`)
+- Hot Items (`/hot`)
 
 To be implemented (in order of priority):
 
-1. Hot Items (`/hot`)
 1. Users (`/user`)
 1. Collection (`/collection`)
 1. Guilds (`/guild`)
