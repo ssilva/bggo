@@ -22,12 +22,18 @@ const (
 
 func printHelp() {
 	fmt.Println("bggo: Get statistics from BoardGameGeek.com")
-	fmt.Println("To get statistcs on a board game:")
-	fmt.Println(" bggo GAMENAME")
+	fmt.Println()
+	fmt.Println("To get the rating of a board game:")
+	fmt.Println("  bggo GAMENAME")
+	fmt.Println()
+	fmt.Println("To get the rating of a board game, using exact search:")
+	fmt.Println("  bggo -exact GAMENAME")
+	fmt.Println()
 	fmt.Println("To get play statistcs on a user:")
-	fmt.Println(" bggo -plays USERNAME")
+	fmt.Println("  bggo -plays USERNAME")
+	fmt.Println()
 	fmt.Println("To get the list of most active games:")
-	fmt.Println(" bggo -hot")
+	fmt.Println("  bggo -hot")
 }
 
 func httpGetAndReadAll(url string) (xmldata []byte) {
