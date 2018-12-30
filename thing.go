@@ -6,9 +6,9 @@ import (
 
 // ThingResponse represents the /thing API response
 type ThingResponse struct {
-	XMLName    xml.Name  `xml:"items"`
-	TermsOfUse string    `xml:"termsofuse,attr"`
-	Item       thingitem `xml:"item"`
+	XMLName    xml.Name    `xml:"items"`
+	TermsOfUse string      `xml:"termsofuse,attr"`
+	Items      []thingitem `xml:"item"`
 }
 
 type thingitem struct {
