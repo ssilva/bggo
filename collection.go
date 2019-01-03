@@ -2,7 +2,6 @@ package bggo
 
 import (
 	"encoding/xml"
-	"math"
 )
 
 // CollectionResponse represents the /collection API response
@@ -12,54 +11,6 @@ type CollectionResponse struct {
 	TermsOfUse string     `xml:"termsofuse,attr"`
 	PubDate    string     `xml:"pubdate,attr"` // TODO Make this an actual `time.Time` (not a `string`)
 	Items      []collitem `xml:"item"`
-}
-
-// MostPopularGameOwned returns the game from the collection with highest number of owners
-func (c *CollectionResponse) MostPopularGameOwned() (name string, count int) {
-	for _, item := range c.Items {
-		if item.Status.Own && item.Stats.NumOwned >= count {
-			name = item.Name.Value
-			count = item.Stats.NumOwned
-		}
-	}
-	return
-}
-
-// LeastPopularGameOwned returns the game from the collection with lowest number of owners
-func (c *CollectionResponse) LeastPopularGameOwned() (name string, count int) {
-	count = math.MaxUint32
-
-	for _, item := range c.Items {
-		if item.Status.Own && item.Stats.NumOwned < count {
-			name = item.Name.Value
-			count = item.Stats.NumOwned
-		}
-	}
-	return
-}
-
-// MostPlayedGameOwned returns the game from the collection with highest number of plays by the user
-func (c *CollectionResponse) MostPlayedGameOwned() (name string, count int) {
-	for _, item := range c.Items {
-		if item.Status.Own && item.NumPlays >= count {
-			name = item.Name.Value
-			count = item.NumPlays
-		}
-	}
-	return
-}
-
-// LeastPlayedGameOwned returns the game from the collection with lowest number of plays by the user
-func (c *CollectionResponse) LeastPlayedGameOwned() (name string, count int) {
-	count = math.MaxUint32
-
-	for _, item := range c.Items {
-		if item.Status.Own && item.NumPlays < count {
-			name = item.Name.Value
-			count = item.NumPlays
-		}
-	}
-	return
 }
 
 // JoinObjectIDs joins the collection's object IDs, separated by commas

@@ -165,20 +165,4 @@ func TestCollectionResponse(t *testing.T) {
 	assertEqual(t, coll.Items[1].Status.LastModified, "2017-04-23 14:30:49")
 	assertEqual(t, coll.Items[1].NumPlays, 2)
 	assertEqual(t, coll.Items[1].Comment, "Comment 2")
-
-	mostPopularName, mostPopularCount := coll.MostPopularGameOwned()
-	assertEqual(t, mostPopularName, "Game 2")
-	assertEqual(t, mostPopularCount, 86099)
-
-	leastPopularName, leastPopularCount := coll.LeastPopularGameOwned()
-	assertEqual(t, leastPopularName, "Game 1")
-	assertEqual(t, leastPopularCount, 19973)
-
-	mostPlayedName, mostPlayedCount := coll.MostPlayedGameOwned()
-	assertEqual(t, mostPlayedName, "Game 1")
-	assertEqual(t, mostPlayedCount, 3)
-
-	leastPlayedName, leastPlayedCount := coll.LeastPlayedGameOwned()
-	assertEqual(t, leastPlayedName, "Game 2")
-	assertEqual(t, leastPlayedCount, 2)
 }
