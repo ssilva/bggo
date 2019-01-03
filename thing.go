@@ -102,6 +102,7 @@ func (r *ratings) BoardGameRank() (boardGameRank string) {
 	return
 }
 
+// TODO Consider moving this struct to common.go as it is used by ThingResponse and CollectionResponse
 type rank struct {
 	Type         string `xml:"type,attr"`
 	ID           string `xml:"id,attr"`

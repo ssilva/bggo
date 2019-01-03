@@ -32,12 +32,12 @@ For the moment, the following use cases are available.
     [8.5] ( 3054 votes) Terra Mystica: Fire & Ice
     [8.6] ( 7426 votes) Gaia Project
     ```
-2. Get the rating of a board game, using exact search:
+1. Get the rating of a board game, using exact search:
     ```
     $ bggo -exact "Puerto Rico"
     [8.0] (54791 votes) Puerto Rico
     ```
-2. Get stats for a user:
+1. Get a user's plays:
     ```
     $ bggo -plays Silvast
     Last 100 plays for Silvast
@@ -48,6 +48,56 @@ For the moment, the following use cases are available.
             2018-08-23: Gloomhaven
             2018-03-28: 6 nimmt!
             ⋮
+    ```
+
+1. Get stats on a user's collection:
+    ```
+    $ bggo -collection Silvast
+    
+    Stats for Silvast's Collection
+
+    Owned Games
+            Most played:   Love Letter (16 plays by Silvast)
+            Most popular:  Pandemic (116203 owners)
+            Least popular: Sphinx (523 owners)
+            Highest rated: Terraforming Mars (8.4 average, 33384 votes)
+            Lowest rated:  Sphinx (5.3 average, 190 votes)
+
+    Top 10 Designers
+            Robert Dougherty [3]
+            Darwin Kastle [3]
+            Uwe Rosenberg [3]
+            Thomas Lehmann [2]
+            Vlaada Chvátil [2]
+            Donald X. Vaccarino [2]
+            Scott Almes [2]
+            Stefan Feld [2]
+            Matt Leacock [1]
+            Tom Cleaver [1]
+
+    Top 10 Mechanics
+            Hand Management [22]
+            Card Drafting [17]
+            Set Collection [17]
+            Variable Player Powers [9]
+            Simultaneous Action Selection [7]
+            Deck / Pool Building [7]
+            Press Your Luck [6]
+            Take That [6]
+            Variable Phase Order [5]
+            Worker Placement [5]
+
+    Top 10 Categories
+            Card Game [21]
+            Economic [8]
+            Fantasy [7]
+            Medieval [6]
+            Science Fiction [5]
+            Civilization [5]
+            Fighting [5]
+            Party Game [5]
+            Territory Building [5]
+            Deduction [4]
     ```
 
 1. Get the list of most active games:
@@ -116,11 +166,11 @@ Implemented:
 - Plays (`/plays`)
 - Search (`/search`)
 - Hot Items (`/hot`)
+- Collection (`/collection`)
 
 To be implemented (in order of priority):
 
 1. Users (`/user`)
-1. Collection (`/collection`)
 1. Guilds (`/guild`)
 1. Family Items (`/family`)
 1. Forum Lists (`/forumlist`)

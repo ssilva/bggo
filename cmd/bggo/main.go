@@ -1,12 +1,9 @@
 package main
 
 import (
-	"encoding/xml"
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
+	"math"
 	"net/url"
 	"os"
 
@@ -14,10 +11,11 @@ import (
 )
 
 const (
-	bggurlplays  string = "https://www.boardgamegeek.com/xmlapi2/plays?username="
-	bggurlsearch string = "https://www.boardgamegeek.com/xmlapi2/search?type=boardgame&query="
-	bggurlthing  string = "https://www.boardgamegeek.com/xmlapi2/thing?stats=1&id="
-	bggurlhot    string = "https://www.boardgamegeek.com/xmlapi2/hot?type=boardgame"
+	bggurlplays      string = "https://www.boardgamegeek.com/xmlapi2/plays?username="
+	bggurlsearch     string = "https://www.boardgamegeek.com/xmlapi2/search?type=boardgame&query="
+	bggurlthing      string = "https://www.boardgamegeek.com/xmlapi2/thing?stats=1&id="
+	bggurlhot        string = "https://www.boardgamegeek.com/xmlapi2/hot?type=boardgame"
+	bggurlcollection string = "https://www.boardgamegeek.com/xmlapi2/collection?own=1&stats=1&username="
 )
 
 func printHelp() {
@@ -29,34 +27,14 @@ func printHelp() {
 	fmt.Println("To get the rating of a board game, using exact search:")
 	fmt.Println("  bggo -exact GAMENAME")
 	fmt.Println()
-	fmt.Println("To get play statistcs on a user:")
+	fmt.Println("To get a user's plays:")
 	fmt.Println("  bggo -plays USERNAME")
+	fmt.Println()
+	fmt.Println("To get statistcs on a user's collection of owned games:")
+	fmt.Println("  bggo -collection USERNAME")
 	fmt.Println()
 	fmt.Println("To get the list of most active games:")
 	fmt.Println("  bggo -hot")
-}
-
-func httpGetAndReadAll(url string) (xmldata []byte) {
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Fatalf("ERROR %s", err)
-	}
-	defer resp.Body.Close()
-
-	xmldata, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("ERROR %s", err)
-	}
-
-	return
-}
-
-func unmarshalOrDie(xmldata []byte, object interface{}) {
-	err := xml.Unmarshal(xmldata, object)
-	if err != nil {
-		log.Fatalf("ERROR %s", err)
-	}
-	return
 }
 
 func retrievePlays(username string) (resp *bggo.PlaysResponse) {
@@ -81,20 +59,23 @@ func printPlays(resp *bggo.PlaysResponse) {
 	}
 }
 
-func retrieveGame(gameID string) (resp *bggo.ThingResponse) {
-	xmldata := httpGetAndReadAll(bggurlthing + gameID)
+// `gameIDs` is a comma-separated list of game IDs
+func retrieveGames(gameIDs string) (resp *bggo.ThingResponse) {
+	xmldata := httpGetAndReadAll(bggurlthing + gameIDs)
 	resp = &bggo.ThingResponse{}
 	unmarshalOrDie(xmldata, resp)
 
 	return
 }
 
-func printGame(resp *bggo.ThingResponse) {
-	fmt.Printf("[%.1f] (%5d votes) %s\n",
-		resp.Item.Ratings.Average.Value,
-		resp.Item.Ratings.UsersRated.Value,
-		resp.Item.PrimaryName(),
-	)
+func printGames(resp *bggo.ThingResponse) {
+	for _, item := range resp.Items {
+		fmt.Printf("[%.1f] (%5d votes) %s\n",
+			item.Ratings.Average.Value,
+			item.Ratings.UsersRated.Value,
+			item.PrimaryName(),
+		)
+	}
 }
 
 func searchGame(gameName string, exactSearch bool) (resp *bggo.SearchResponse) {
@@ -119,8 +100,8 @@ func retrieveAndPrintGameRating(gameName string, exactSearch bool) {
 	}
 
 	for _, item := range results.Items {
-		game := retrieveGame(item.ID)
-		printGame(game)
+		game := retrieveGames(item.ID)
+		printGames(game)
 	}
 }
 
@@ -136,10 +117,140 @@ func retrieveAndPrintHotGames() {
 	return
 }
 
+type customstats struct {
+	// Stats based on CollectionResponse
+	mostPlayedName  string
+	mostPlayedCount int
+
+	// Stats based on ThingResponmse
+	designers  map[string]int
+	mechanics  map[string]int
+	categories map[string]int
+
+	mostPopularName  string
+	mostPopularCount int
+
+	leastPopularName  string
+	leastPopularCount int
+
+	highestRatedName  string
+	highestRatedAvg   float32
+	highestRatedVotes int
+
+	lowestRatedName  string
+	lowestRatedAvg   float32
+	lowestRatedVotes int
+}
+
+func makeCustomStats() *customstats {
+	return &customstats{
+		designers:         make(map[string]int),
+		mechanics:         make(map[string]int),
+		categories:        make(map[string]int),
+		leastPopularCount: math.MaxUint32,
+		lowestRatedAvg:    math.MaxFloat32,
+	}
+}
+
+func collectStatsOnCollection(stats *customstats, coll *bggo.CollectionResponse) {
+	for _, item := range coll.Items {
+		if item.NumPlays >= stats.mostPlayedCount {
+			stats.mostPlayedName = item.Name.Value
+			stats.mostPlayedCount = item.NumPlays
+		}
+	}
+}
+
+func collectStatsOnGames(stats *customstats, games *bggo.ThingResponse) {
+	for _, g := range games.Items {
+		for _, link := range g.Links {
+			switch link.Type {
+			case "boardgamedesigner":
+				stats.designers[link.Value]++
+			case "boardgamemechanic":
+				stats.mechanics[link.Value]++
+			case "boardgamecategory":
+				stats.categories[link.Value]++
+			}
+		}
+
+		if g.Ratings.Owned.Value >= stats.mostPopularCount {
+			stats.mostPopularName = g.PrimaryName()
+			stats.mostPopularCount = g.Ratings.Owned.Value
+		}
+
+		if g.Ratings.Owned.Value < stats.leastPopularCount {
+			stats.leastPopularName = g.PrimaryName()
+			stats.leastPopularCount = g.Ratings.Owned.Value
+		}
+
+		if g.Ratings.Average.Value >= stats.highestRatedAvg {
+			stats.highestRatedName = g.PrimaryName()
+			stats.highestRatedAvg = g.Ratings.Average.Value
+			stats.highestRatedVotes = g.Ratings.UsersRated.Value
+		}
+
+		if g.Ratings.Average.Value < stats.lowestRatedAvg {
+			stats.lowestRatedName = g.PrimaryName()
+			stats.lowestRatedAvg = g.Ratings.Average.Value
+			stats.lowestRatedVotes = g.Ratings.UsersRated.Value
+		}
+	}
+}
+
+func printStats(username string, stats *customstats) {
+	fmt.Println()
+	fmt.Printf("Stats for %s's Collection\n", username)
+	fmt.Println()
+	fmt.Println("Owned Games")
+	fmt.Printf("\tMost played:   %s (%d plays by %s)\n", stats.mostPlayedName, stats.mostPlayedCount, username)
+	fmt.Printf("\tMost popular:  %s (%d owners)\n", stats.mostPopularName, stats.mostPopularCount)
+	fmt.Printf("\tLeast popular: %s (%d owners)\n", stats.leastPopularName, stats.leastPopularCount)
+	fmt.Printf("\tHighest rated: %s (%.1f average, %d votes)\n", stats.highestRatedName, stats.highestRatedAvg, stats.highestRatedVotes)
+	fmt.Printf("\tLowest rated:  %s (%.1f average, %d votes)\n", stats.lowestRatedName, stats.lowestRatedAvg, stats.lowestRatedVotes)
+
+	fmt.Println()
+	printCollectionStats(10, &stats.designers, "Designers")
+	fmt.Println()
+	printCollectionStats(10, &stats.mechanics, "Mechanics")
+	fmt.Println()
+	printCollectionStats(10, &stats.categories, "Categories")
+}
+
+func retrieveCollection(username string) (coll *bggo.CollectionResponse) {
+	xmldata := httpGetAndReadAll(bggurlcollection + username)
+	coll = &bggo.CollectionResponse{}
+	unmarshalOrDie(xmldata, coll)
+	return
+}
+
+func retrieveAndPrintCollectionStats(username string) {
+	collection := retrieveCollection(username)
+	games := retrieveGames(collection.JoinObjectIDs())
+
+	stats := makeCustomStats()
+	collectStatsOnCollection(stats, collection)
+	collectStatsOnGames(stats, games)
+
+	printStats(username, stats)
+}
+
+// printCollectionStats prints the top `limit` items of a map holding collection statistics of a
+// particular type (e.g. number of games owned, grouped by boardgame designers)
+func printCollectionStats(limit int, collectionStats *map[string]int, collectionStatsLabel string) {
+	keyValues := sortMapByValue(collectionStats)
+
+	fmt.Printf("Top %d %s\n", limit, collectionStatsLabel)
+	for _, keyvalue := range keyValues[:limit] {
+		fmt.Printf("\t%s [%d]\n", keyvalue.key, keyvalue.value)
+	}
+}
+
 func main() {
 	help := flag.Bool("help", false, "print usage")
 	plays := flag.String("plays", "", "get plays for USER")
 	hot := flag.Bool("hot", false, "get the list of most active games")
+	collection := flag.String("collection", "", "get collection stats for USER")
 	exactSearch := flag.Bool("exact", false, "exact search")
 	flag.Parse()
 	gameName := flag.Arg(0)
@@ -153,6 +264,9 @@ func main() {
 
 	} else if *hot {
 		retrieveAndPrintHotGames()
+
+	} else if *collection != "" {
+		retrieveAndPrintCollectionStats(*collection)
 
 	} else if gameName != "" {
 		if len(gameName) < 3 {
