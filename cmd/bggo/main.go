@@ -70,9 +70,10 @@ func retrieveGames(gameIDs string) (resp *bggo.ThingResponse) {
 
 func printGames(resp *bggo.ThingResponse) {
 	for _, item := range resp.Items {
-		fmt.Printf("[%.1f] (%5d votes) %s\n",
+		fmt.Printf("[%.1f] (%5d votes, rank %3s) %s\n",
 			item.Ratings.Average.Value,
 			item.Ratings.UsersRated.Value,
+			item.Ratings.BoardGameRank(),
 			item.PrimaryName(),
 		)
 	}

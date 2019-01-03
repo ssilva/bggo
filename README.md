@@ -24,18 +24,18 @@ For the moment, the following use cases are available.
 1. Get the rating of a board game:
     ```
     $ bggo "Terra Mystica"
-    [8.2] (31152 votes) Terra Mystica
-    [8.1] (  759 votes) Terra Mystica: 4 Town Tiles
-    [8.7] (  183 votes) Terra Mystica: Big Box
-    [7.8] (  537 votes) Terra Mystica: Bonus Card Shipping Value
-    [8.2] (  491 votes) Terra Mystica: Erweiterungsbogen
-    [8.5] ( 3054 votes) Terra Mystica: Fire & Ice
-    [8.6] ( 7426 votes) Gaia Project
+    [8.2] (31304 votes, rank  10) Terra Mystica
+    [8.1] (  758 votes, rank n/a) Terra Mystica: 4 Town Tiles
+    [8.7] (  187 votes, rank n/a) Terra Mystica: Big Box
+    [7.8] (  536 votes, rank n/a) Terra Mystica: Bonus Card Shipping Value
+    [8.2] (  493 votes, rank n/a) Terra Mystica: Erweiterungsbogen
+    [8.5] ( 3063 votes, rank n/a) Terra Mystica: Fire & Ice
+    [8.6] ( 7603 votes, rank   8) Gaia Project
     ```
 1. Get the rating of a board game, using exact search:
     ```
     $ bggo -exact "Puerto Rico"
-    [8.0] (54791 votes) Puerto Rico
+    [8.0] (54936 votes, rank  16) Puerto Rico
     ```
 1. Get a user's plays:
     ```
