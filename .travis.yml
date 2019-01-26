@@ -18,8 +18,7 @@ install:
 
 script:
 - go test -v -race ./...
-- if [ "${LATEST}" = "true" ]; then gox -os="linux darwin windows" -arch="amd64" -output="logshare.."
-  -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+- gox -os="linux darwin windows" -arch="amd64" -output="logshare.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...
 
 deploy:
   provider: releases
