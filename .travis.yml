@@ -31,4 +31,3 @@ deploy:
   - bggo.linux.amd64
   on:
     tags: true
-    condition: $LATEST = true
