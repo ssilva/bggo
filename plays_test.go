@@ -16,6 +16,9 @@ func TestPlayResponse(t *testing.T) {
 					<subtype value="boardgameimplementation" />
 				</subtypes>
 			</item>
+			<players>
+				<player username="aaa" userid="1234" startposition="2" color="red" score="999" new="1" rating="5" win="1"/>
+			</players>
 		</play>
 	</plays>`
 
@@ -44,6 +47,13 @@ func TestPlayResponse(t *testing.T) {
 	assertEqual(t, plays.Plays[0].Items[0].ObjectType, "thing")
 	assertEqual(t, plays.Plays[0].Items[0].ObjectID, "123")
 	assertEqual(t, len(plays.Plays[0].Items[0].Subtypes), 2)
+
+	assertEqual(t, plays.Plays[0].Players[0].Username, "aaa")
+	assertEqual(t, plays.Plays[0].Players[0].UserID, "1234")
+	assertEqual(t, plays.Plays[0].Players[0].StartPosition, 2)
+	assertEqual(t, plays.Plays[0].Players[0].Color, "red")
+	assertEqual(t, plays.Plays[0].Players[0].Score, 999)
+	assertEqual(t, plays.Plays[0].Players[0].New, true)
 
 	assertEqual(t, plays.Plays[0].Items[0].Subtypes[0].Name, "boardgame")
 	assertEqual(t, plays.Plays[0].Items[0].Subtypes[1].Name, "boardgameimplementation")
