@@ -63,8 +63,8 @@ func printPlays(resp *bggo.PlaysResponse) {
 				} else {
 					fmt.Printf("%s", player.Username)
 				}
-				if player.Score != 0 {
-					fmt.Printf(" - %d", player.Score)
+				if player.Score != "" {
+					fmt.Printf(" - %s", player.Score)
 				}
 				if i < (len(play.Players) - 1) {
 					fmt.Print(", ")

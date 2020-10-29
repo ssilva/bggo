@@ -39,9 +39,9 @@ type player struct {
 	Username      string   `xml:"username,attr"`
 	UserID        string   `xml:"userid,attr"`
 	Name          string   `xml:"name,attr"`
-	StartPosition int      `xml:"startposition,attr"`
+	StartPosition string   `xml:"startposition,attr"`
 	Color         string   `xml:"color,attr"`
-	Score         int      `xml:"score,attr"`
+	Score         string   `xml:"score,attr"`
 	New           bool     `xml:"new,attr"`
 	Rating        int      `xml:"rating,attr"`
 	Win           bool     `xml:"win,attr"`
