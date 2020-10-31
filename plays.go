@@ -24,6 +24,7 @@ type play struct {
 	NowInStats bool       `xml:"nowinstats,attr"`
 	Location   string     `xml:"location,attr"`
 	Items      []playitem `xml:"item"`
+	Players    []player   `xml:"players>player"`
 }
 
 type playitem struct {
@@ -31,6 +32,19 @@ type playitem struct {
 	ObjectType string    `xml:"objecttype,attr"`
 	ObjectID   string    `xml:"objectid,attr"`
 	Subtypes   []subtype `xml:"subtypes>subtype"`
+}
+
+type player struct {
+	XMLName       xml.Name `xml:"player"`
+	Username      string   `xml:"username,attr"`
+	UserID        string   `xml:"userid,attr"`
+	Name          string   `xml:"name,attr"`
+	StartPosition string   `xml:"startposition,attr"`
+	Color         string   `xml:"color,attr"`
+	Score         string   `xml:"score,attr"`
+	New           bool     `xml:"new,attr"`
+	Rating        int      `xml:"rating,attr"`
+	Win           bool     `xml:"win,attr"`
 }
 
 type subtype struct {

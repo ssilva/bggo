@@ -55,6 +55,24 @@ func printPlays(resp *bggo.PlaysResponse) {
 				fmt.Print(", ")
 			}
 		}
+		if len(play.Players) > 0 {
+			fmt.Printf(" [")
+			for i, player := range play.Players {
+				if player.Name != "" {
+					fmt.Printf("%s", player.Name)
+				} else {
+					fmt.Printf("%s", player.Username)
+				}
+				if player.Score != "" {
+					fmt.Printf(" - %s", player.Score)
+				}
+				if i < (len(play.Players) - 1) {
+					fmt.Print(", ")
+				}
+			}
+			fmt.Printf("]")
+		}
+
 		fmt.Println()
 	}
 }
