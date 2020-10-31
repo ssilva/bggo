@@ -50,9 +50,9 @@ func TestPlayResponse(t *testing.T) {
 
 	assertEqual(t, plays.Plays[0].Players[0].Username, "aaa")
 	assertEqual(t, plays.Plays[0].Players[0].UserID, "1234")
-	assertEqual(t, plays.Plays[0].Players[0].StartPosition, 2)
+	assertEqual(t, plays.Plays[0].Players[0].StartPosition, "2")
 	assertEqual(t, plays.Plays[0].Players[0].Color, "red")
-	assertEqual(t, plays.Plays[0].Players[0].Score, 999)
+	assertEqual(t, plays.Plays[0].Players[0].Score, "999")
 	assertEqual(t, plays.Plays[0].Players[0].New, true)
 
 	assertEqual(t, plays.Plays[0].Items[0].Subtypes[0].Name, "boardgame")
